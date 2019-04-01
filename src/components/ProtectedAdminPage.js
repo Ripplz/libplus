@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Pane, Spinner } from "evergreen-ui";
 import { auth, db } from "../config/firebase-config";
-import Login from "./Login";
-import Register from "./Register";
+import InitAdmin from "./InitAdmin";
 import authStates from "../constants/auth_state";
 
-const ProtectedPage = ({ component: Component, authState, ...rest }) => {
+const ProtectedAdminPage = ({ component: Component, authState, ...rest }) => {
   return (
     <Route
       {...rest}
@@ -20,25 +19,22 @@ const ProtectedPage = ({ component: Component, authState, ...rest }) => {
               </Pane>
             );
           case authStates.AUTH_STATE_LOGGED_OUT:
-            return path === "/login" ? (
-              <Login />
-            ) : path === "/register" ? (
-              <Register />
-            ) : (
-              <Redirect push to="/login" />
-            );
           case authStates.AUTH_STATE_USER:
-            return path === "/login" || path === "/register" ? (
-              <Redirect push to="/" />
+            return path === "/admin/login" ? (
+              <InitAdmin />
+            ) : (
+              <Redirect push to="/admin/login" />
+            );
+          case authStates.AUTH_STATE_ADMIN:
+            return path === "/admin/login" ? (
+              <Redirect push to="/admin" />
             ) : (
               <Component {...props} />
             );
-          case authStates.AUTH_STATE_ADMIN:
-            return <Redirect push to="/admin" />;
         }
       }}
     />
   );
 };
 
-export default ProtectedPage;
+export default ProtectedAdminPage;

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import InputField from "./InputField";
-import { Button, Spinner } from "evergreen-ui";
-import { auth } from "../config/firebase-config";
+import { Button } from "evergreen-ui";
+import { auth, db } from "../config/firebase-config";
 import { Redirect } from "react-router-dom";
+import SubmitButton from "./SubmitButton";
 
 const Register = props => {
   const [name, setName] = useState("");
@@ -13,10 +14,16 @@ const Register = props => {
 
   const register = event => {
     setLoading(true);
-    const user = { name, email, password };
+    const user = { name, email, type: "user" };
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then(userCred => switchView(true))
+      .then(userCred => {
+        // Add user to database
+        const uid = userCred.user.uid;
+        db.collection("users")
+          .doc(uid)
+          .set({ uid: uid, ...user });
+      })
       .catch(error => {
         switch (error.code) {
           case "auth/email-already-in-use":
@@ -41,7 +48,7 @@ const Register = props => {
   };
 
   return shouldSwitch ? (
-    <Redirect to="/" />
+    <Redirect push to="/login" />
   ) : (
     <form onSubmit={register}>
       <InputField
@@ -67,26 +74,7 @@ const Register = props => {
         type="password"
         isRequired={true}
       />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <Button
-          type="submit"
-          appearance="primary"
-          intent="success"
-          marginRight={8}
-          marginBottom={8}
-          disabled={loading ? true : false}
-        >
-          Register
-        </Button>
-        {loading ? <Spinner size={16} /> : <></>}
-      </div>
+      <SubmitButton loading={loading} label="Register" />
       <Button
         type="button"
         appearance="primary"

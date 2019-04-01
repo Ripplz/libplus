@@ -18,7 +18,6 @@ const AddBook = props => {
         snapshot.forEach(doc => {
           newAuthors.push(doc.data().name);
         });
-        console.log(typeof newAuthors);
         setAuthors(newAuthors);
         setAuthor(newAuthors[0]);
       })
@@ -27,8 +26,6 @@ const AddBook = props => {
 
   const submitBook = () => {
     setLoading(!loading);
-    console.log(title);
-    console.log(author);
     db.collection("books")
       .add({
         title: title,

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import InputField from "./InputField";
-import { Button, Spinner } from "evergreen-ui";
+import { Button } from "evergreen-ui";
 import { auth } from "../config/firebase-config";
 import { Redirect } from 'react-router-dom';
+import SubmitButton from "./SubmitButton";
 
 const Login = props => {
   const [email, setEmail] = useState("");
@@ -32,7 +33,7 @@ const Login = props => {
   };
 
   return (
-      shouldSwitch ? <Redirect to="/register" /> : <form onSubmit={login}>
+      shouldSwitch ? <Redirect push to="/register" /> : <form onSubmit={login}>
         <InputField
           hint="Enter Email"
           name="email"
@@ -49,26 +50,7 @@ const Login = props => {
           type="password"
           isRequired={true}
         />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
-          <Button
-            type="submit"
-            appearance="primary"
-            intent="success"
-            marginRight={8}
-            marginBottom={8}
-            disabled={loading ? true : false}
-          >
-            Login
-          </Button>
-          {loading ? <Spinner size={16} /> : <></>}
-        </div>
+        <SubmitButton loading={loading} label="Login" />
         <Button
           type="button"
           appearance="primary"

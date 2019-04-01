@@ -8,7 +8,9 @@ const InputField = ({
   value,
   handleChange,
   hint,
-  isRequired
+  style,
+  isRequired,
+  isInvalid
 }) => (
   <div style={{display: 'flex', flexDirection: 'column'}}>
     <TextInput
@@ -20,6 +22,8 @@ const InputField = ({
       onChange={event => handleChange(event.target.value)}
       height={40}
       marginBottom={20}
+      style={style}
+      isInvalid={isInvalid}
       required={isRequired || false}
     />
   </div>

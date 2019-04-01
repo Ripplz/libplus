@@ -12,7 +12,6 @@ const AddAuthor = props => {
 
   const submitForm = event => {
     setLoading(!loading);
-    console.log(name);
     if (name !== null && name !== "") {
       db.collection("authors")
         .add({

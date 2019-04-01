@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Spinner } from "evergreen-ui";
 
-const SubmitButton = ({ loading }) => (
+const SubmitButton = ({ loading, label }) => (
   <div
     style={{
       display: "flex",
@@ -18,7 +18,7 @@ const SubmitButton = ({ loading }) => (
       marginBottom={8}
       disabled={loading ? true : false}
     >
-      Login
+      {label}
     </Button>
     {loading ? <Spinner size={16} /> : <></>}
   </div>
