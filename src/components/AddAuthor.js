@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Spinner, Button, Text } from "evergreen-ui";
+import { Text } from "evergreen-ui";
 import { db, storage } from "../config/firebase-config";
 import InputField from "./InputField";
 import FileUploadField from "./FileUploadField";
-import { createInflateRaw } from "zlib";
+import SubmitButton from "./SubmitButton";
 
 const AddAuthor = props => {
   const [loading, setLoading] = useState(false);
@@ -42,6 +42,10 @@ const AddAuthor = props => {
       setLoading(false);
       setName("");
       setPicFile(null);
+    }).catch(error => {
+      alert('An error occured when trying to add author. Please try again');
+      console.log(error);
+      setLoading(false);
     });
   };
 
@@ -64,14 +68,7 @@ const AddAuthor = props => {
         />
         {uploading ? <Text>Uploading...</Text> : <></>}
         <br />
-        <Button
-          type="submit"
-          appearance="primary"
-          disabled={loading ? true : uploading ? true : false}
-        >
-          Submit
-        </Button>
-        {loading ? <Spinner /> : <></>}
+        <SubmitButton loading={loading} uploading={uploading} label="Submit" />
       </form>
     </>
   );

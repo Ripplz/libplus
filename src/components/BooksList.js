@@ -4,8 +4,8 @@ import { db } from "../config/firebase-config";
 import BookListItem from "./BookListItem";
 
 const BooksList = props => {
-  const [books, setBooks] = useState(null);
-  const [authors, setAuthors] = useState(null);
+  const [books, setBooks] = useState([]);
+  const [authors, setAuthors] = useState([]);
   var isMounted = true;
 
   useEffect(() => {
@@ -14,9 +14,7 @@ const BooksList = props => {
       .then(books => {
         if (isMounted) {
           const newBooks = {};
-          books.forEach(
-            book => (newBooks[book.id] = { id: book.id, ...book.data() })
-          );
+          books.forEach(book => (newBooks[book.id] = { ...book.data() }));
           setBooks(newBooks);
           db.collection("authors")
             .get()
@@ -26,7 +24,6 @@ const BooksList = props => {
                 authors.forEach(
                   author =>
                     (newAuthors[author.id] = {
-                      id: author.id,
                       ...author.data()
                     })
                 );
@@ -58,7 +55,11 @@ const BooksList = props => {
           <BookListItem
             key={bookId}
             book={books[bookId]}
-            authors={authors}
+            authors={
+              authors.length === 0
+                ? null
+                : books[bookId].authors.map(authorId => authors[authorId])
+            }
             handleSelect={openBorrowBook}
           />
         ))}

@@ -1,5 +1,4 @@
 import React from "react";
-import LinkedNavListItem from "./LinkedNavListItem";
 import { Link } from "react-router-dom";
 import NavListItem from "./NavListItem";
 

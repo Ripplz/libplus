@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import BookSearch from "./components/BookSearch";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import AddBook from "./components/AddBook";
 import AddAuthor from "./components/AddAuthor";
 import Header from "./components/Header";

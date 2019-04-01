@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import LinkedNavListItem from "./LinkedNavListItem";
 import NavList from "./NavList";
 import Title from "./Title";
 import { db, auth } from "../config/firebase-config";
 import LinkedAdminNavListItem from "./LinkedAdminNavListItem";
-import NavListItem from "./NavListItem";
 import Logout from "./Logout";
 
 const Header = props => {
