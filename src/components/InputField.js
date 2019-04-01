@@ -8,6 +8,7 @@ const InputField = ({
   value,
   handleChange,
   hint,
+  min,
   style,
   isRequired,
   isInvalid
@@ -24,6 +25,7 @@ const InputField = ({
       marginBottom={20}
       style={style}
       isInvalid={isInvalid}
+      min={min&&min}
       required={isRequired || false}
     />
   </div>

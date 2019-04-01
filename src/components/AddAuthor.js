@@ -1,36 +1,48 @@
 import React, { useState } from "react";
-import { Spinner, Button } from "evergreen-ui";
-import { db } from "../config/firebase-config";
+import { Spinner, Button, Text } from "evergreen-ui";
+import { db, storage } from "../config/firebase-config";
 import InputField from "./InputField";
 import FileUploadField from "./FileUploadField";
+import { createInflateRaw } from "zlib";
 
 const AddAuthor = props => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [name, setName] = useState("");
-  const [photoUrl, setPhotoUrl] = useState("");
+  const [picFile, setPicFile] = useState(null);
 
   const submitForm = event => {
-    setLoading(!loading);
-    if (name !== null && name !== "") {
-      db.collection("authors")
-        .add({
-          name: name,
-          photoUrl: photoUrl
-        })
-        .then(ref => {
-          setLoading(false);
-          alert(`Author ${name} uploaded successfully`);
-          setName("");
-          setPhotoUrl("");
-        })
-        .catch(error => alert(error));
-    }
     event.preventDefault();
+    setLoading(true);
+    var authorRef = db.collection("authors").doc();
+    if (picFile === null) {
+      createAuthor(authorRef, false);
+    } else {
+      var picRef = storage.ref("authors/" + authorRef.id);
+      setUploading(true);
+      picRef
+        .put(picFile)
+        .then(snapshot => {
+          setUploading(false);
+          createAuthor(authorRef, true);
+        })
+        .catch(error => {
+          console.log(error);
+          setUploading(false);
+          setLoading(false);
+          alert("An error occured when uploading image. Please try again");
+        });
+    }
   };
 
-  const uploadPhoto = event => {
-    setUploading(true);
+  const createAuthor = (authorRef, hasPhoto) => {
+    const author = { name, hasPhoto, id: authorRef.id };
+    authorRef.set(author).then(() => {
+      alert(`Author ${name} successfully added`);
+      setLoading(false);
+      setName("");
+      setPicFile(null);
+    });
   };
 
   return (
@@ -38,7 +50,7 @@ const AddAuthor = props => {
       <h3>Add Author</h3>
       <form onSubmit={!loading ? submitForm : () => {}}>
         <InputField
-          label="Name"
+          hint="Name"
           name="name"
           value={name}
           handleChange={setName}
@@ -47,16 +59,10 @@ const AddAuthor = props => {
         <FileUploadField
           name="photoUrl"
           title="Upload Photo"
+          handleChange={files => setPicFile(files[0])}
           acceptableTypes="image/png, image/jpeg"
         />
-        <Button
-          onClick={uploadPhoto}
-          appearance="primary"
-          disabled={uploading ? true : loading ? true : false}
-        >
-          Upload
-        </Button>
-        {uploading ? <Spinner /> : <></>}
+        {uploading ? <Text>Uploading...</Text> : <></>}
         <br />
         <Button
           type="submit"
